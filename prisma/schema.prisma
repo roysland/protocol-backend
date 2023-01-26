@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int                 @id @default(autoincrement())
+  email             String             @unique
+  name              String?
+  password          String
+  displayName       String?
+  phone             Int?
+  authId            String?              @unique
+  stools            Stool[]
+  supplements       Supplement[]
+  supplementTracker SupplementTracker[]
+  settings          UserSettings[]
+  medicine          Medicine[]
+  history           MedicineHistory[]
+}
+
+model UserSettings {
+  id            Int     @id @default(autoincrement())
+  functionality String
+  enabled       Boolean @default(true)
+  userId        Int
+  user          User    @relation(fields: [userId], references: [id])
+}
+
+model Supplement {
+  id                  Int                @id @default(autoincrement())
+  name                String
+  when                String?
+  userId              Int
+  supplementTrackerId Int?
+  SupplementTracker   SupplementTracker? @relation(fields: [supplementTrackerId], references: [id])
+  user                User               @relation(fields: [userId], references: [id])
+}
+
+model SupplementTracker {
+  id         Int          @id @default(autoincrement())
+  userId     Int
+  checked    Boolean      @default(false)
+  updatedAt  DateTime?
+  supplement Supplement[]
+  user       User         @relation(fields: [userId], references: [id])
+}
+
+model Medicine {
+  id        Int               @id @default(autoincrement())
+  name      String
+  when      String?
+  startDate DateTime          @default(now())
+  endDate   DateTime?
+  user      User              @relation(fields: [userId], references: [id])
+  userId    Int
+  history   MedicineHistory[]
+}
+
+model MedicineHistory {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+  medicineId Int
+  checked    Boolean?
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+}
+
+model Stool {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  userId    Int
+  stoolId   Int
+  stool     StoolType @relation(fields: [stoolId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model StoolType {
+  id           Int     @id @default(autoincrement())
+  name         String
+  bristolValue Int
+  description  String?
+  image        String?
+  stool        Stool[]
+}
