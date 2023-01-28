@@ -36,6 +36,7 @@ model Supplement {
   name                String
   when                String?
   userId              Int
+  active              Boolean           @default(true)
   history             SupplementTracker[]
   user                User               @relation(fields: [userId], references: [id])
 }

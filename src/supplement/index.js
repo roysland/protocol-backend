@@ -35,7 +35,8 @@ router.post('/check', userRoute, async (req, res) => {
 router.get('/', userRoute, async (req, res) => {
     const supplements = await prisma.supplement.findMany({
         where: {
-            userId: req.user.id
+            userId: req.user.id,
+            active: true
         }
     })
     res.json({
@@ -48,6 +49,7 @@ router.get('/today', userRoute, async (req, res) => {
     const medicine = await prisma.supplement.findMany({
         where: {
             userId: req.user.id,
+            active: true
         },
         include: {
             history: {
@@ -69,13 +71,16 @@ router.get('/today', userRoute, async (req, res) => {
 })
 
 router.post('/delete', userRoute, async (req, res) => {
-    await prisma.supplement.deleteMany({
+    await prisma.supplement.updateMany({
         where: {
             userId: req.user.id,
             id: {
                 in: req.body.items
             }
-        }
+        },
+        data: {
+            active: false
+        } 
     })
     console.log(req.body)
     res.json({

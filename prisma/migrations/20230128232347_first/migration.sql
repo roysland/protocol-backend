@@ -24,6 +24,7 @@ CREATE TABLE "Supplement" (
     "name" TEXT NOT NULL,
     "when" TEXT,
     "userId" INTEGER NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT true,
     CONSTRAINT "Supplement_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 

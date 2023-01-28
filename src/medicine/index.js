@@ -16,6 +16,7 @@ router.post('/', userRoute, async (req, res) => {
             name: req.body.name,
             when: req.body.when,
             startDate: new Date(req.body.start),
+            endDate: endDate,
             userId: req.user.id
         }
     })
@@ -49,20 +50,16 @@ router.get('/all', userRoute, async (req, res) => {
 })
 
 router.get('/today', userRoute, async (req, res) => {
-    const today = new Date().setHours(0,0,0,0)
+    const today = new Date().setHours(23,59,59,0)
     const medicine = await prisma.medicine.findMany({
         where: {
             userId: req.user.id,
             startDate: {
-                lte: new Date()
+                lte: new Date(today)
             },
-            OR: {
-                endDate: {
-                    gt: new Date(today)
-                },
-                endDate: null
+            endDate: {
+                gte: new Date(today)
             }
-            
         },
         orderBy: {
             startDate: 'desc'
