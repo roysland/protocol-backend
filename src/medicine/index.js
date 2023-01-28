@@ -48,7 +48,7 @@ router.get('/all', userRoute, async (req, res) => {
         medicine: medicine
     })
 })
-
+// Fixes
 router.get('/today', userRoute, async (req, res) => {
     const today = new Date().setHours(23,59,59,0)
     const medicine = await prisma.medicine.findMany({
