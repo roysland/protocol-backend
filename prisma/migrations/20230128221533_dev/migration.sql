@@ -24,17 +24,17 @@ CREATE TABLE "Supplement" (
     "name" TEXT NOT NULL,
     "when" TEXT,
     "userId" INTEGER NOT NULL,
-    "supplementTrackerId" INTEGER,
-    CONSTRAINT "Supplement_supplementTrackerId_fkey" FOREIGN KEY ("supplementTrackerId") REFERENCES "SupplementTracker" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "Supplement_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "SupplementTracker" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "supplementId" INTEGER NOT NULL,
+    "checked" BOOLEAN,
     "userId" INTEGER NOT NULL,
-    "checked" BOOLEAN NOT NULL DEFAULT false,
-    "updatedAt" DATETIME,
+    CONSTRAINT "SupplementTracker_supplementId_fkey" FOREIGN KEY ("supplementId") REFERENCES "Supplement" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "SupplementTracker_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 

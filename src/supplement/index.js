@@ -19,6 +19,19 @@ router.post('/', userRoute, async (req, res) => {
     })
 })
 
+router.post('/check', userRoute, async (req, res) => {
+    const history = await prisma.supplementTracker.create({
+        data: {
+            userId: req.user.id,
+            checked: true,
+            supplementId: req.body.id
+        }
+    })
+    res.json({
+        history: history
+    })
+})
+
 router.get('/', userRoute, async (req, res) => {
     const supplements = await prisma.supplement.findMany({
         where: {
@@ -27,6 +40,31 @@ router.get('/', userRoute, async (req, res) => {
     })
     res.json({
         supplements: supplements
+    })
+})
+
+router.get('/today', userRoute, async (req, res) => {
+    const today = new Date().setHours(0,0,0,0)
+    const medicine = await prisma.supplement.findMany({
+        where: {
+            userId: req.user.id,
+        },
+        include: {
+            history: {
+                select: {
+                    checked: true,
+                    createdAt: true
+                },
+                where: {
+                    createdAt: {
+                        gte: new Date(today)
+                    }
+                }
+            }
+        }
+    })
+    res.json({
+        today: medicine
     })
 })
 

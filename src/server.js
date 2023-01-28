@@ -93,25 +93,31 @@ app.post('/login', async (req, res) => {
             email: req.body.email
         }
     })
-
-    bcrypt.compare(req.body.password, findUser.password, (err, result) => {
-        if (err) {
-            res.json({
-                msg: 'No such user, or combination of email and passord'
-            })
-        } else {
-            const token = Jwt.sign({id: findUser.id, email: findUser.email, name: findUser.name }, privateKey, { expiresIn: '200h'})
-            res.json({
-                user: {
-                    id: findUser.id,
-                    name: findUser.name,
-                    email: findUser.email,
-                    token: token
-                }
-            })
-        }
-        
-    })
+    if (findUser) {
+        bcrypt.compare(req.body.password, findUser.password, (err, result) => {
+            if (err) {
+                res.json({
+                    msg: 'No such user, or combination of email and passord'
+                })
+            } else {
+                const token = Jwt.sign({id: findUser.id, email: findUser.email, name: findUser.name }, privateKey, { expiresIn: '200h'})
+                res.json({
+                    user: {
+                        id: findUser.id,
+                        name: findUser.name,
+                        email: findUser.email,
+                        token: token
+                    }
+                })
+            }
+            
+        })
+    } else {
+        res.json({
+            msg: 'No such user, or combination of email and passord'
+        })
+    }
+    
 })
 
 app.listen(port, () => {

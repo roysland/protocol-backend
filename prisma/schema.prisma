@@ -36,18 +36,18 @@ model Supplement {
   name                String
   when                String?
   userId              Int
-  supplementTrackerId Int?
-  SupplementTracker   SupplementTracker? @relation(fields: [supplementTrackerId], references: [id])
+  history             SupplementTracker[]
   user                User               @relation(fields: [userId], references: [id])
 }
 
 model SupplementTracker {
-  id         Int          @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  supplement   Supplement @relation(fields: [supplementId], references: [id])
+  supplementId Int
+  checked    Boolean?
+  user       User     @relation(fields: [userId], references: [id])
   userId     Int
-  checked    Boolean      @default(false)
-  updatedAt  DateTime?
-  supplement Supplement[]
-  user       User         @relation(fields: [userId], references: [id])
 }
 
 model Medicine {

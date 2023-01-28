@@ -54,8 +54,15 @@ router.get('/today', userRoute, async (req, res) => {
         where: {
             userId: req.user.id,
             startDate: {
-                lte: new Date(today)
+                lte: new Date()
+            },
+            OR: {
+                endDate: {
+                    gt: new Date(today)
+                },
+                endDate: null
             }
+            
         },
         orderBy: {
             startDate: 'desc'
@@ -106,6 +113,32 @@ router.post('/check', userRoute, async (req, res) => {
     
     res.json({
         history: history
+    })
+})
+
+router.post('/delete', userRoute, async (req, res) => {
+    /* await prisma.Medicine.deleteMany({
+        where: {
+            userId: req.user.id,
+            id: {
+                in: req.body.items
+            }
+        }
+    }) */
+    await prisma.medicine.updateMany({
+        where: {
+            userId: req.user.id,
+            id: {
+                in: req.body.items
+            }
+        },
+        data: {
+            endDate: new Date('2000-01-01')
+        }
+    })
+    console.log(req.body)
+    res.json({
+        deleted: 'things'
     })
 })
 export default router

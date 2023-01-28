@@ -11,7 +11,6 @@ export async function userRoute (req, res, next) {
     try {
         const validToken = await jwt.verify(token, process.env.TOKEN_SECRET)
         req.user = validToken
-        console.log('Valid user', req.user)
         next()
     } catch {
         res.sendStatus(401)
